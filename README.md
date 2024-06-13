@@ -12,11 +12,61 @@
 1. Изменение имени хоста
 2. Изменение списка DNS-серверов
 
-К нему написан CLI-клиент (Ссылка выше), который отправляет запросы на сервер
+### 1. Эндпоинт для изменения имени хоста
+
+
+```proto
+service GatewayService{
+  rpc ChangeHostName (HostRequest) returns (HostResponse){
+    option (google.api.http) = {
+      post: "/v1/changehost"
+      body: "*"
+    };
+  }
+}
+
+message HostRequest{
+  string NewHostName = 1;
+  string Addr = 2;
+  string Password = 3;
+}
+
+message HostResponse{
+  string Result = 1;
+}
+
+```
+
+
+### 1. Эндпоинт для изменения списка DNS-серверов
+
+
+```proto
+ rpc DNSChange (DNSRequest) returns (DNSResponse){
+    option (google.api.http) = {
+      post: "/v1/dnschange"
+      body: "*"
+    };
+  }
+}
+
+message DNSRequest{
+  string NewDNSName = 1;
+  string Addr = 2;
+  string Password = 3;
+}
+
+message DNSResponse{
+  string Result = 1;
+}
+```
+### Также к данному серверу написан CLI-клиент (Ссылка выше)
 
 
 TODO:
 1. Собрать Docker
-2. Дописать http клиента
-3. Улучшить CLI
+2. Сделать Makefile
+3. Дописать http клиента
+4. Написать тесты
+5. Улучшить CLI
 
