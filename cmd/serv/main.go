@@ -15,12 +15,10 @@ func main() {
 	cfg := config.LoadConfig()
 	log := logger.SetLogger()
 
+	//Start gRPC-Server
 	log.Info("Starting app", slog.Any("cfg", cfg))
-
 	server := grpc_app.NewApp(log, cfg.GRPC.Host, cfg.GRPC.Port)
-
 	sig := make(chan os.Signal)
-
 	go func() {
 		err := server.ServerRun()
 		if err != nil {
@@ -28,6 +26,7 @@ func main() {
 		}
 	}()
 
+	//Graceful shutdown
 	signal.Notify(sig, syscall.SIGTERM, syscall.SIGINT, syscall.SIGKILL)
 	<-sig
 	server.ServerStop()

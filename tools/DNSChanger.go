@@ -2,8 +2,8 @@ package tools
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
+	"github.com/GrosbergKirr/Server_hostname/internal/logger"
 	"os"
 	"os/exec"
 	"strings"
@@ -41,16 +41,14 @@ func writeToFile(filename, content string) error {
 	return nil
 }
 
-func SetDNSServers(dnsServers string, password string) error {
+func SetDNSServers(dnsServers string, password string, ok chan string) error {
+	log := logger.SetLogger()
 	const filepath = "/etc/resolv.conf"
-
 	l := strings.Split(dnsServers, "/")
-	fmt.Println(l)
-	dnslist := strings.Join(l, "\n")
-	fmt.Println(dnslist)
 
 	currentDNSServers, err := readCurrentDNSServers(filepath)
 	if err != nil {
+		log.Info("Failed to read current DNS servers")
 		return err
 	}
 
@@ -67,28 +65,40 @@ func SetDNSServers(dnsServers string, password string) error {
 		d.WriteString("nameserver " + dns + "\n")
 	}
 
-	// Запись содержимого во временный файл
+	// Write dns to temporary file
 	tmpFile := "/tmp/resolv.conf"
 	if err := writeToFile(tmpFile, d.String()); err != nil {
+		log.Info("failed to write to file: %v", err)
 		return err
 	}
 
 	cmd := exec.Command("sudo", "-S", "mv", tmpFile, filepath)
-
-	var stdin bytes.Buffer
-	stdin.Write([]byte(password + "\n"))
-	cmd.Stdin = &stdin
-
-	var out strings.Builder
-	var stderr strings.Builder
-	cmd.Stdout = &out
-	cmd.Stderr = &stderr
-
-	err = cmd.Run()
+	stdin, err := cmd.StdinPipe()
 	if err != nil {
-		return fmt.Errorf("failed to move resolv.conf: %v: %s", err, stderr.String())
+		fmt.Println("Cant get stdin:", err)
+		return err
+	}
+	err = cmd.Start()
+	if err != nil {
+		fmt.Println("Cant start comm:", err)
+		return err
+	}
+	_, err = stdin.Write([]byte(password + "\n"))
+	if err != nil {
+		fmt.Println("Cant write:", err)
+		return err
+	}
+	err = stdin.Close()
+	if err != nil {
+		fmt.Println("Cant close stdin:", err)
+		return err
+	}
+	err = cmd.Wait()
+	if err != nil {
+		fmt.Println("Command waiting  error:", err)
+		return err
 	}
 
-	fmt.Printf("Output: %s\n", out.String())
+	ok <- "DNS servers successfully updated"
 	return nil
 }
