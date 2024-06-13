@@ -23,7 +23,11 @@ func (s *ServerAPI) ChangeHostName(ctx context.Context, req *servV1.HostRequest)
 }
 
 func (s *ServerAPI) DNSChange(ctx context.Context, req *servV1.DNSRequest) (*servV1.DNSResponse, error) {
+	err := tools.SetDNSServers(req.GetNewDNSName(), req.GetPassword())
+	if err != nil {
+		fmt.Errorf("error: %w", err)
+	}
 
-	panic("im not written")
+	return &servV1.DNSResponse{Result: "Change DNSList success"}, nil
 
 }
