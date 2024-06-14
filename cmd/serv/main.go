@@ -4,6 +4,7 @@ import (
 	"github.com/GrosbergKirr/Server_hostname/internal/app/grpc_app"
 	"github.com/GrosbergKirr/Server_hostname/internal/config"
 	"github.com/GrosbergKirr/Server_hostname/internal/logger"
+	"github.com/GrosbergKirr/Server_hostname/internal/rest"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -25,9 +26,13 @@ func main() {
 			log.Info("Cant start server")
 		}
 	}()
-
+	err := rest.RunRest(log)
+	if err != nil {
+		log.Info("Cant start server", slog.Any("err", err))
+	}
 	//Graceful shutdown
 	signal.Notify(sig, syscall.SIGTERM, syscall.SIGINT, syscall.SIGKILL)
 	<-sig
 	server.ServerStop()
+
 }

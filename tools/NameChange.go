@@ -34,7 +34,6 @@ func HostNameChanger(newName string, password string, ok chan string) error {
 	}
 	err = cmd.Wait()
 	if err != nil {
-		fmt.Println("Command waiting  error:", err)
 		return err
 	}
 
