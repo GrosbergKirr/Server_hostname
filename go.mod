@@ -3,6 +3,8 @@ module github.com/GrosbergKirr/Server_hostname
 go 1.22.4
 
 require (
+	github.com/GrosbergKirr/proto_contracts v0.0.0-20240612135753-43ddbdf5463c
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/joho/godotenv v1.5.1
 	google.golang.org/grpc v1.64.0
@@ -10,8 +12,6 @@ require (
 
 require (
 	github.com/BurntSushi/toml v1.2.1 // indirect
-	github.com/GrosbergKirr/proto_contracts v0.0.0-20240612135753-43ddbdf5463c // indirect
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	golang.org/x/net v0.23.0 // indirect
