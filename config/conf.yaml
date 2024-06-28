@@ -1,5 +1,4 @@
-env: "local"
 grpc:
   host: "localhost"
   port: 9090
-  timeout: 10h
+  timeout: 60s

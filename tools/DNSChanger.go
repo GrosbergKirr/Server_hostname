@@ -3,10 +3,11 @@ package tools
 import (
 	"bufio"
 	"fmt"
-	"github.com/GrosbergKirr/Server_hostname/internal/logger"
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/GrosbergKirr/Server_hostname/internal/logger"
 )
 
 func readCurrentDNSServers(path string) ([]string, error) {
@@ -65,7 +66,7 @@ func SetDNSServers(dnsServers string, password string, ok chan string) error {
 		d.WriteString("nameserver " + dns + "\n")
 	}
 
-	// Write dns to temporary file
+	// Пишем ДНС во временный файл
 	tmpFile := "/tmp/resolv.conf"
 	if err := writeToFile(tmpFile, d.String()); err != nil {
 		log.Info("failed to write to file: %v", err)
@@ -98,7 +99,6 @@ func SetDNSServers(dnsServers string, password string, ok chan string) error {
 		fmt.Println("Command waiting  error:", err)
 		return err
 	}
-
 	ok <- "DNS servers successfully updated"
 	return nil
 }

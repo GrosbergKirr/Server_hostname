@@ -2,12 +2,13 @@ package rest
 
 import (
 	"context"
+	"log/slog"
+	"net/http"
+
 	servV1 "github.com/GrosbergKirr/proto_contracts/gen/go/service"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"log/slog"
-	"net/http"
 )
 
 func RunRest(log *slog.Logger) error {
@@ -19,6 +20,7 @@ func RunRest(log *slog.Logger) error {
 		log.Info("Failed to register gateway", "error", err)
 		return err
 	}
+
 	log.Info("server listening at 8080")
 	if err := http.ListenAndServe("localhost:8080", mux); err != nil {
 		log.Info("Failed to start server", "error", err)
